@@ -4,6 +4,7 @@ import commands.BackgroundableCommand;
 import commands.Command;
 import factory.CommandFactory;
 import manager.JobManager;
+import manager.ProcessManager;
 
 import java.util.Scanner;
 
@@ -13,11 +14,13 @@ public class CustomShell {
     private final JobManager jobManager;
     private final CommandFactory commandFactory;
     private ShellState state;
+    private final ProcessManager processManager;
 
     public CustomShell(){
         this.jobManager = new JobManager();
         this.commandFactory = new CommandFactory();
         this.state = new ShellState();
+        this.processManager = new ProcessManager();
     }
 
     //start the shell command
@@ -50,13 +53,19 @@ public class CustomShell {
         String args = parts.length >1 ? parts[1]: "";
 
         try {
-            Command command = commandFactory.getCommand(commandName, state, jobManager);
+            System.out.println("command is " + commandName);
+            Command command = commandFactory.getCommand(commandName, state, jobManager, processManager);
             if (command != null) {
                 if (background && command instanceof BackgroundableCommand) {
                     int jobId = jobManager.createJob(commandName, args);
                     ((BackgroundableCommand) command).executeInBackground(args, jobId);
                     System.out.println("[" + jobId + "] " + commandName + " " + args + " &");
-                } else {
+                }
+                else if(commandName.equals("roundrobin") || commandName.equals("priorityqueue")){
+                    command.execute(commandName);
+                }
+                else {
+                    System.out.println("args passed is " + args);
                     command.execute(args);
                 }
             } else {

@@ -1,14 +1,18 @@
 package shell;
 
+import manager.ProcessManager;
+
 import java.io.File;
 import java.io.IOException;
 
 // Shell State Class
 public class ShellState {
     public File currentDirectory;
+    private ProcessManager processManager;
 
     public ShellState() {
         currentDirectory = new File(System.getProperty("user.dir"));
+        processManager = new ProcessManager();
     }
 
     public File getCurrentDirectory() {
@@ -25,5 +29,9 @@ public class ShellState {
 
     public String getCurrentDirectoryPath() {
         return currentDirectory.getAbsolutePath();
+    }
+
+    public ProcessManager getProcessManager() {
+        return processManager;
     }
 }

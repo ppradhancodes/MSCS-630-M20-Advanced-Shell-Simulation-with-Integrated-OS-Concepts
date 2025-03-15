@@ -3,6 +3,7 @@ package factory;
 import commands.commandsList.*;
 import commands.Command;
 import manager.JobManager;
+import manager.ProcessManager;
 import shell.ShellState;
 
 import java.util.HashMap;
@@ -16,7 +17,7 @@ public class CommandFactory {
         commandRegistry = new HashMap<>();
     }
 
-    public Command getCommand(String name, ShellState state, JobManager jobManager) {
+    public Command getCommand(String name, ShellState state, JobManager jobManager, ProcessManager processManager) {
         switch (name.toLowerCase()) {
             case "cd": return new CdCommand(state, jobManager);
             case "pwd": return new PwdCommand(state, jobManager);
@@ -34,6 +35,8 @@ public class CommandFactory {
             case "fg": return new FgCommand(state, jobManager);
             case "bg": return new BgCommand(state, jobManager);
             case "sleep": return new SleepCommand(state, jobManager);
+            case "roundrobin": return new CreateSchedulerCommand(state, jobManager, processManager);
+            case "priorityqueue": return new CreateSchedulerCommand(state,jobManager, processManager);
             default: return null;
         }
     }
